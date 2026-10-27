@@ -1,0 +1,6 @@
+@import "tailwindcss";
+:root { --ink: #102a2b; --muted: #6c7d7d; --cream: #f4f1e9; --mint: #b9e6d3; --coral: #ff765f; --line: #dce5df; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
+button, input, select { font: inherit; }
+.grain { background-image: radial-gradient(rgba(16,42,43,.07) .7px, transparent .7px); background-size: 7px 7px; }

@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String             @id @default(cuid())
+  email          String             @unique
+  name           String?
+  passwordHash   String
+  cashBalance    Float              @default(100000)
+  createdAt      DateTime           @default(now())
+  holdings       Holding[]
+  trades         Trade[]
+  snapshots      NetWorthSnapshot[]
+  monthlyResults MonthlyResult[]
+}
+
+model Holding {
+  id          String   @id @default(cuid())
+  userId      String
+  coinId      String
+  symbol      String
+  name        String
+  quantity    Float    @default(0)
+  averageCost Float    @default(0)
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coinId])
+  @@index([userId])
+}
+
+model Trade {
+  id        String   @id @default(cuid())
+  userId    String
+  coinId    String
+  symbol    String
+  name      String
+  side      String
+  quantity  Float
+  price     Float
+  total     Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model NetWorthSnapshot {
+  id        String   @id @default(cuid())
+  userId    String
+  value     Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model MonthlyResult {
+  id         String   @id @default(cuid())
+  userId     String
+  month      String
+  startValue Float
+  endValue   Float
+  returnPct  Float
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+  @@index([month, returnPct])
+}
